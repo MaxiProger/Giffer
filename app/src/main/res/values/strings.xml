@@ -8,4 +8,7 @@
     <string name="action_settings">Settings</string>
     <string name="search">Search</string>
     <string name="slogan">The world of GIFs!</string>
+    <string name="about">About</string>
+    <string name="share">Share</string>
+    <string name="communicate">Communicate</string>
 </resources>
