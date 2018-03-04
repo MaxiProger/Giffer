@@ -1,7 +1,7 @@
-package com.v_prudnikoff.giffer.view
+package com.v_prudnikoff.giffer.views
 
+import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -19,12 +19,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         toolbar.title = getString(R.string.app_name)
         setSupportActionBar(toolbar)
-
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-
         nav_view.setNavigationItemSelectedListener(this)
     }
 
@@ -37,24 +35,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.info -> {
-                // Handle the camera action
+            R.id.nav_about -> {
+                val transaction = fragmentManager.beginTransaction()
+                transaction.add(R.id.fragment_container, InfoFragment.newInstance(), "info")
+                transaction.addToBackStack(null)
+                transaction.commit()
             }
             R.id.nav_share -> {
-
+                startShareIntent()
             }
         }
-
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun startShareIntent() {
+        val sharingIntent = Intent(Intent.ACTION_SEND)
+        sharingIntent.type = "text/plain"
+        val shareBody = "Enjoy Giffer!"
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Giffer")
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
+        startActivity(Intent.createChooser(sharingIntent, "Share via"))
     }
 }
