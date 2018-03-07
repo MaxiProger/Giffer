@@ -8,33 +8,42 @@ import android.view.ViewGroup
 import android.widget.GridView
 import com.v_prudnikoff.giffer.R
 import com.v_prudnikoff.giffer.adapters.GridAdapter
-import com.v_prudnikoff.giffer.helpers.Repository
+import com.v_prudnikoff.giffer.helpers.ScreenHelper
+import com.v_prudnikoff.giffer.helpers.ScreenHelper.Companion.COLUMN_NUM
+import com.v_prudnikoff.giffer.interfaces.DataInteface
 import com.v_prudnikoff.giffer.models.GifModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import pl.droidsonroids.gif.GifDrawable
+import kotlinx.android.synthetic.main.app_bar_main.*
 
 
-class GridFragment : Fragment() {
+class GridFragment : Fragment(), DataInteface {
 
-    private var gifsData: Array<GifModel>? = null
     private var gridAdapter: GridAdapter? = null
+    private var gridView: GridView? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val gridView = container!!.findViewById<GridView>(R.id.mainGridView)
-        gridView.numColumns = 6
-        gridAdapter = GridAdapter(activity, gifsData!!)
-        gridView.adapter = GridAdapter(activity, gifsData!!)
-        Repository().getTrendingGifs(20)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-            gifsData = it
-            gridAdapter!!.notifyDataSetChanged()
+        val rootView = inflater!!.inflate(R.layout.fragment_grid, container, false)
+        gridView = rootView.findViewById(R.id.mainGridView) as GridView
+        gridView!!.numColumns = COLUMN_NUM
+        gridView!!.stretchMode = GridView.STRETCH_COLUMN_WIDTH
+        gridView!!.columnWidth = ScreenHelper().getScreenWidth() / COLUMN_NUM
+        return rootView
+    }
 
-        }
-        return inflater!!.inflate(R.layout.fragment_grid, container, false)
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        gridAdapter = GridAdapter(activity)
+        gridView!!.adapter = gridAdapter
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        activity.toolbar.title = resources.getString(R.string.trending)
+    }
+
+    override fun setDataChanged(data: Array<GifModel>) {
+        gridAdapter!!.data = data
+        gridAdapter!!.notifyDataSetChanged()
     }
 
     companion object {

@@ -11,5 +11,6 @@
     <string name="about">About</string>
     <string name="share">Share</string>
     <string name="communicate">Communicate</string>
-    <string name="about_app">Giffer\nEnjoy awesome gifs!\nDeveloper: v_prudnikoff</string>
+    <string name="about_app">Giffer\nEnjoy awesome gifs!\nDeveloper: v_prudnikoff</string>\
+    <string name="trending">Trending</string>
 </resources>

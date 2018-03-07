@@ -5,16 +5,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 import com.v_prudnikoff.giffer.R
 import com.v_prudnikoff.giffer.models.GifModel
-import io.reactivex.Observable
-import pl.droidsonroids.gif.GifImageView
+import android.widget.LinearLayout
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.v_prudnikoff.giffer.helpers.ScreenHelper
 
+class GridAdapter(private val context: Context) : BaseAdapter() {
 
-class GridAdapter(private val context: Context, private val data: Array<GifModel>) : BaseAdapter() {
+    var data: Array<GifModel>? = null
 
     override fun getCount(): Int {
-        return 100
+        if (data != null)
+           return data!!.size
+        else return 0
     }
 
     override fun getItem(position: Int): Any? {
@@ -26,9 +31,16 @@ class GridAdapter(private val context: Context, private val data: Array<GifModel
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val gifView = parent.findViewById<GifImageView>(R.id.gifRaw)
-        gifView.scaleType = ImageView.ScaleType.CENTER_CROP
-        gifView.setImageResource(R.drawable.giff)
-        return gifView
+        val imgGif = ImageView(context)
+        val scWidth = ScreenHelper().getScreenWidth() / ScreenHelper.COLUMN_NUM
+        val layoutParams = LinearLayout.LayoutParams(scWidth, scWidth)
+        imgGif.layoutParams = layoutParams
+        Glide.with(context)
+                .load(data!![position].url)
+                .asGif()
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imgGif)
+        return imgGif
     }
 }
