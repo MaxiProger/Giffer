@@ -8,6 +8,7 @@ import com.v_prudnikoff.giffer.models.GifModel
 import io.reactivex.Observable
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.IOException
 
 
 class Repository {
@@ -15,35 +16,28 @@ class Repository {
     private val API_KEY = "DFizeBNLOuetmquCCDqhBXrrv8SDOlOV"
     private var numOfGifs = 0
 
+    @Throws(IOException::class)
     fun getTrendingGifs(numOfGifs: Int): Observable<Array<GifModel>> {
         var reader: BufferedReader
         val giffyEndpoint = URL("https://api.giphy.com/v1/gifs/trending?api_key=" + API_KEY
                 + "&raiting=pg&limit=" + numOfGifs.toString())
         val connection = giffyEndpoint.openConnection() as HttpsURLConnection
-        try {
-            return Observable.fromCallable {
-                this.numOfGifs = numOfGifs
-                connection.connect()
-                val stream = connection.inputStream
-                reader = BufferedReader(InputStreamReader(stream))
-                val buffer = StringBuffer()
-                var line: String?
-                do {
-                    line = reader.readLine()
-                    if (line != null)
-                        buffer.append(line + "\n")
-                } while (line != null)
-                parseJSON(JSONObject(buffer.toString()))
-            }
-        } catch (ex: Exception) {
-            Log.i("REST", "Something bad's happened in the  response")
-            ex.printStackTrace()
+
+        return Observable.fromCallable {
+            this.numOfGifs = numOfGifs
+            connection.connect()
+            val stream = connection.inputStream
+            reader = BufferedReader(InputStreamReader(stream))
+            connection.disconnect()
+            val buffer = StringBuffer()
+            var line: String?
+            do {
+                line = reader.readLine()
+                if (line != null)
+                    buffer.append(line + "\n")
+            } while (line != null)
+            parseJSON(JSONObject(buffer.toString()))
         }
-        finally {
-            if (connection != null)
-                connection.disconnect()
-        }
-        return Observable.just(emptyArray())
     }
 
     fun getQueryGifs(numOfGifs: Int, query: String): Observable<Array<GifModel>> {
@@ -51,30 +45,21 @@ class Repository {
         val giffyEndpoint = URL("https://api.giphy.com/v1/gifs/search?api_key=" + API_KEY
                 + "&q=" + query + "&raiting=pg&limit=" + numOfGifs.toString())
         val connection = giffyEndpoint.openConnection() as HttpsURLConnection
-        try {
-            return Observable.fromCallable {
-                this.numOfGifs = numOfGifs
-                connection.connect()
-                val stream = connection.inputStream
-                reader = BufferedReader(InputStreamReader(stream))
-                val buffer = StringBuffer()
-                var line: String?
-                do {
-                    line = reader.readLine()
-                    if (line != null)
-                        buffer.append(line + "\n")
-                } while (line != null)
-                parseJSON(JSONObject(buffer.toString()))
-            }
-        } catch (ex: Exception) {
-            Log.i("REST", "Something bad's happened in the  response")
-            ex.printStackTrace()
+        return Observable.fromCallable {
+            this.numOfGifs = numOfGifs
+            connection.connect()
+            val stream = connection.inputStream
+            reader = BufferedReader(InputStreamReader(stream))
+            connection.disconnect()
+            val buffer = StringBuffer()
+            var line: String?
+            do {
+                line = reader.readLine()
+                if (line != null)
+                    buffer.append(line + "\n")
+            } while (line != null)
+            parseJSON(JSONObject(buffer.toString()))
         }
-        finally {
-            if (connection != null)
-                connection.disconnect()
-        }
-        return Observable.just(emptyArray())
     }
 
     private fun parseJSON(root: JSONObject): Array<GifModel> {

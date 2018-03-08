@@ -11,12 +11,14 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.v_prudnikoff.giffer.R
 import com.v_prudnikoff.giffer.interfaces.DataInteface
 import com.v_prudnikoff.giffer.models.GifModel
 import com.v_prudnikoff.giffer.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -56,8 +58,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                mainViewModel!!.loadQueryGifs(query)
-                toolbar.title = "Search: " + query
+                mainViewModel!!.onQuerySubmit(query)
                 searchView.clearFocus()
                 return true
             }
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 transaction.replace(R.id.fragment_container, GridFragment.newInstance(), "grid")
                 transaction.addToBackStack(null)
                 transaction.commit()
-                mainViewModel!!.onCreate()
+                mainViewModel!!.onMenuTrending()
             }
             R.id.nav_about -> {
                 val transaction = fragmentManager.beginTransaction()
@@ -91,11 +92,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun setDataChanged(data: Array<GifModel>) {
+    fun setDataLoaded(data: Array<GifModel>) {
         val currentFragment = fragmentManager.findFragmentByTag("grid")
         if (currentFragment != null && currentFragment.isVisible) {
             (currentFragment as DataInteface).setDataChanged(data)
         }
+    }
+
+    fun showErrorMessage(errMsg: String) {
+        Toast.makeText(this, errMsg, Toast.LENGTH_SHORT).show()
     }
 
     private fun startShareIntent() {

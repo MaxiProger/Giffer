@@ -1,5 +1,6 @@
 package com.v_prudnikoff.giffer.viewmodels
 
+import android.util.Log
 import com.v_prudnikoff.giffer.helpers.Repository
 import com.v_prudnikoff.giffer.views.MainActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,22 +18,42 @@ class MainViewModel(private val activity: MainActivity) {
         loadTrendingGifs()
     }
 
-    private fun loadTrendingGifs() {
-        repository!!.getTrendingGifs(25)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    activity.setDataChanged(it)
-                }
+    fun onMenuTrending() {
+        loadTrendingGifs()
     }
 
-    fun loadQueryGifs(query: String) {
+    fun onQuerySubmit(query: String) {
+        loadQueryGifs(query)
+    }
+
+    private fun loadTrendingGifs() {
+        try {
+            repository!!.getTrendingGifs(25)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        activity.setDataLoaded(it)
+                    }
+        } catch (ex: Exception) {
+            val errMsg = "Something bad's happened with connection"
+            Log.e("network", errMsg)
+            activity.showErrorMessage(errMsg)
+        }
+    }
+
+    private fun loadQueryGifs(query: String) {
+        try {
         repository!!.getQueryGifs(25, query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    activity.setDataChanged(it)
+                    activity.setDataLoaded(it)
                 }
+        } catch (ex: Exception) {
+            val errMsg = "Something bad's happened with connection"
+            Log.e("network", errMsg)
+            activity.showErrorMessage(errMsg)
+        }
     }
 
 }
