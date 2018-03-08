@@ -27,33 +27,29 @@ class MainViewModel(private val activity: MainActivity) {
     }
 
     private fun loadTrendingGifs() {
-        try {
             repository!!.getTrendingGifs(25)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
+                    .subscribe({
                         activity.setDataLoaded(it)
-                    }
-        } catch (ex: Exception) {
-            val errMsg = "Something bad's happened with connection"
-            Log.e("network", errMsg)
-            activity.showErrorMessage(errMsg)
-        }
+                    }, {
+                        val errMsg = "Something bad's happened with connection"
+                        Log.e("network", errMsg)
+                        activity.showErrorMessage(errMsg)
+                    })
     }
 
     private fun loadQueryGifs(query: String) {
-        try {
         repository!!.getQueryGifs(25, query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe ({
                     activity.setDataLoaded(it)
-                }
-        } catch (ex: Exception) {
-            val errMsg = "Something bad's happened with connection"
-            Log.e("network", errMsg)
-            activity.showErrorMessage(errMsg)
-        }
+                }, {
+                    val errMsg = "Something bad's happened with connection"
+                    Log.e("network", errMsg)
+                    activity.showErrorMessage(errMsg)
+                })
     }
 
 }

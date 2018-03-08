@@ -16,7 +16,6 @@ class Repository {
     private val API_KEY = "DFizeBNLOuetmquCCDqhBXrrv8SDOlOV"
     private var numOfGifs = 0
 
-    @Throws(IOException::class)
     fun getTrendingGifs(numOfGifs: Int): Observable<Array<GifModel>> {
         var reader: BufferedReader
         val giffyEndpoint = URL("https://api.giphy.com/v1/gifs/trending?api_key=" + API_KEY
@@ -28,7 +27,6 @@ class Repository {
             connection.connect()
             val stream = connection.inputStream
             reader = BufferedReader(InputStreamReader(stream))
-            connection.disconnect()
             val buffer = StringBuffer()
             var line: String?
             do {
@@ -36,6 +34,7 @@ class Repository {
                 if (line != null)
                     buffer.append(line + "\n")
             } while (line != null)
+            connection.disconnect()
             parseJSON(JSONObject(buffer.toString()))
         }
     }
@@ -50,7 +49,6 @@ class Repository {
             connection.connect()
             val stream = connection.inputStream
             reader = BufferedReader(InputStreamReader(stream))
-            connection.disconnect()
             val buffer = StringBuffer()
             var line: String?
             do {
@@ -58,6 +56,7 @@ class Repository {
                 if (line != null)
                     buffer.append(line + "\n")
             } while (line != null)
+            connection.disconnect()
             parseJSON(JSONObject(buffer.toString()))
         }
     }
