@@ -1,6 +1,5 @@
 package com.v_prudnikoff.giffer.helpers
 
-import android.util.Log
 import java.io.InputStreamReader
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
@@ -8,8 +7,6 @@ import com.v_prudnikoff.giffer.models.GifModel
 import io.reactivex.Observable
 import org.json.JSONObject
 import java.io.BufferedReader
-import java.io.IOException
-
 
 class Repository {
 

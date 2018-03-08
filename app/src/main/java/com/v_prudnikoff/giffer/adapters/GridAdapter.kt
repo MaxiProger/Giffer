@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.v_prudnikoff.giffer.R
 import com.v_prudnikoff.giffer.models.GifModel
 import android.widget.LinearLayout
 import com.bumptech.glide.load.engine.DiskCacheStrategy

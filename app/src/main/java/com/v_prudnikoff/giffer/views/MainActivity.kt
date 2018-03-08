@@ -19,7 +19,6 @@ import com.v_prudnikoff.giffer.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
-
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     var mainViewModel: MainViewModel? = null
